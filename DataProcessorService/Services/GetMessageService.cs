@@ -1,5 +1,6 @@
 ﻿using DataProcessorService.Abstractions;
 using DataProcessorService.Models;
+using Microsoft.Extensions.Options;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
 using System.Text;
@@ -10,14 +11,15 @@ namespace DataProcessorService.Services
     public class GetMessageService(
         IConnectionFactory _connectionFactory,
         IServiceScopeFactory _scopeFactory,
+        IOptions<RabbitMQSettings> _options,
         ILogger<GetMessageService> _logger): IGetMessageService
     {
         public async Task GetMessageFromRabbitMQ(CancellationToken cancellationToken)
         {
             var connection = await _connectionFactory.CreateConnectionAsync();
             var channel = await connection.CreateChannelAsync();
-            string name = "search-engine";
-            await channel.QueueDeclareAsync(name, durable: true, exclusive: false, autoDelete: false);
+            var options = _options.Value; 
+            await channel.QueueDeclareAsync(options.HostName, durable: true, exclusive: false, autoDelete: false);
             var consumer = new AsyncEventingBasicConsumer(channel);
             consumer.ReceivedAsync += async (s, args) =>
             {
@@ -28,7 +30,7 @@ namespace DataProcessorService.Services
                 await service.Executes(comments, cancellationToken);
                 await channel.BasicAckAsync(args.DeliveryTag, false);
             };
-            await channel.BasicConsumeAsync("search-engine", autoAck: true, consumer: consumer);
+            await channel.BasicConsumeAsync(options.HostName, autoAck: true, consumer: consumer);
         }
     }
 }
