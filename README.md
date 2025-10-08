@@ -15,9 +15,9 @@
 
 ```bash
 git clone https://github.com/Kerven22/src.git
-cd your-project
+```
 
-2. ** Запустите RabbitMQ через Docker:**
+2. **Запустите RabbitMQ через Docker:**
 
 docker run -d --hostname rabbit-host --name rabbitmq \
   -p 5672:5672 -p 15672:15672 \
@@ -41,7 +41,9 @@ docker run -d --hostname rabbit-host --name rabbitmq \
 
 ```bash
     dotnet add package Microsoft.EntityFrameworkCore.Sqlite
+```
 
  5. **Запуск приложени**
     ```bash
     dotnet run
+    ```
