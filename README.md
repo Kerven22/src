@@ -32,7 +32,7 @@ docker run -d --hostname rabbit-host --name rabbitmq \
   "Port": 5672,
   "Username": "guest",
   "Password": "guest",
-  "QueueName": "search-engine"
+  "QueueName": "your-queue-name"
 }
 
 
